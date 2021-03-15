@@ -1,0 +1,18 @@
+[
+    {
+        "ip": "192.168.200.1",
+        "dispositivo": "Router Oficina"
+    },
+    {
+        "ip": "192.168.200.113",
+        "dispositivo": "Computadora Oficina"
+    },
+    {
+        "ip": "192.168.200.50",
+        "dispositivo": "Random"
+    },
+    {
+        "ip": "192.168.200.60",
+        "dispositivo": "Random"
+    }
+]

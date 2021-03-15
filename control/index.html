@@ -1,0 +1,253 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="./styles.css" tpye="text/css" media="all">
+    <script src='./js/webcc.min.js'></script>
+</head>
+
+<body>
+    <div id='container'></div>
+
+    <script>
+        let REQUEST_TIMEOUT;
+        let PING_HIGH;
+        let TOTAL_DEVICES;
+        // MANAGE ERRORS - _ - CUANDO NO ESTÁ CONECTADO A RED TIRA PING IGUAL FIJATE 
+        function pingFunction(ip, row) {
+            const table = document.getElementById('tabla-cuerpo');
+            let delta_time = 0;
+            let fila = table.childNodes[row];
+            let value = fila.childNodes[2].childNodes[0].innerHTML;
+            let FQDN = ip;
+            let i = 0;
+            let time_cumul = 0;
+            url = "http://" + FQDN;
+            let ping = new XMLHttpRequest();
+            ping.date1 = Date.now();
+            ping.timeout = REQUEST_TIMEOUT;
+            let pingbox = document.getElementById('tabla-cuerpo').childNodes[row].childNodes[2];
+
+            ping.onreadystatechange = () => {
+                if (ping.readyState == 4) {
+                    pingbox.classList.remove("ping-red");
+                    delta_time = Date.now() - ping.date1;
+                    if (delta_time > PING_HIGH) {
+                        pingbox.childNodes[0].innerHTML = "✔<br>" + delta_time + " ms";
+                        pingbox.classList.remove("ping-green");
+                        pingbox.classList.add('ping-yellow');
+                    } else {
+                        pingbox.childNodes[0].innerHTML = "✔<br>" + delta_time + " ms";
+                        pingbox.classList.remove("ping-yellow");
+                        pingbox.classList.add('ping-green');
+                    }
+                }
+            }
+
+            ping.ontimeout = () => {
+                pingbox.childNodes[0].innerHTML = "✖<br>Inaccesible";
+                pingbox.classList.add('ping-red')
+            }
+            ping.open("GET", url, true)
+            ping.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            ping.setRequestHeader('X-PINGOTHER', 'pingpong');
+            ping.send();
+
+        }
+
+        function pingAll() {
+            const table = document.getElementById('tabla-cuerpo');
+            for (let u = 0; u < TOTAL_DEVICES; u++) {
+                let delta_time = 0;
+                let fila = table.childNodes[u];
+                let ip = fila.childNodes[0].childNodes[0].innerHTML;
+                let value = fila.childNodes[2].childNodes[0].innerHTML;
+                let FQDN = ip;
+                let i = 0;
+                let time_cumul = 0;
+                url = "http://" + FQDN;
+                let ping = new XMLHttpRequest();
+                ping.date1 = Date.now();
+                ping.timeout = REQUEST_TIMEOUT;
+                let pingbox = document.getElementById('tabla-cuerpo').childNodes[u].childNodes[2];
+                ping.onreadystatechange = () => {
+                    if (ping.readyState == 4) {
+                        pingbox.classList.remove("ping-red");
+                        delta_time = Date.now() - ping.date1;
+                        if (delta_time > PING_HIGH) {
+                            pingbox.childNodes[0].innerHTML = "✔<br>" + delta_time + " ms";
+                            pingbox.classList.remove("ping-green");
+                            pingbox.classList.add('ping-yellow');
+                        } else {
+                            pingbox.childNodes[0].innerHTML = "✔<br>" + delta_time + " ms";
+                            pingbox.classList.remove("ping-yellow");
+                            pingbox.classList.add('ping-green');
+                        }
+                    }
+                }
+                ping.ontimeout = () => {
+                    pingbox.childNodes[0].innerHTML = "✖<br>Inaccesible";
+                    pingbox.classList.add('ping-red')
+                }
+                ping.open("GET", url, true)
+                ping.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                ping.setRequestHeader('X-PINGOTHER', 'pingpong');
+                ping.send();
+            }
+        }
+
+        function createTable() {
+            const docContainer = document.getElementById('container')
+            const docTable = document.createElement('table');
+            docTable.id = 'tabla'
+            docContainer.appendChild(docTable);
+            // Header de la tabla
+            const thead = document.createElement('thead');
+            docTable.appendChild(thead);
+            const th1 = document.createElement('th');
+            const th2 = document.createElement('th');
+            const th3 = document.createElement('th');
+            const th4 = document.createElement('th');
+            th1.classList.add('titlebox');
+            th2.classList.add('titlebox');
+            th3.classList.add('titlebox');
+            th3.classList.add('estado');
+            th4.classList.add('titlebox');
+            const thtext1 = document.createTextNode('IP');
+            const thtext2 = document.createTextNode('Dispositivo');
+            const thtext3 = document.createTextNode('Estado');
+            const thtext4 = document.createTextNode('');
+            th1.appendChild(thtext1);
+            th2.appendChild(thtext2);
+            th3.appendChild(thtext3);
+            th4.appendChild(thtext4);
+            thead.appendChild(th1);
+            thead.appendChild(th2);
+            thead.appendChild(th3);
+            thead.appendChild(th4);
+            //  Cuerpo para insertar luego los dispositivos
+            const tbody = document.createElement('tbody')
+            tbody.id = 'tabla-cuerpo';
+            docTable.appendChild(tbody);
+            //  Espacio y boton
+            const br = document.createElement('br');
+            docContainer.appendChild(br);
+        }
+
+        function addDevices(input) {
+            TOTAL_DEVICES = input.length;
+            const table = document.getElementById('tabla-cuerpo');
+            for (let i = 0; i < input.length; i++) {
+                let fila = table.insertRow();
+                let celda1 = fila.insertCell();
+                let celda2 = fila.insertCell();
+                let celda3 = fila.insertCell();
+                let celda4 = fila.insertCell();
+                let div1 = document.createElement('div');
+                let div2 = document.createElement('div');
+                let div3 = document.createElement('div');
+                let div4 = document.createElement('div');
+
+                div1.classList.add('center-item');
+                div1.innerHTML = input[i].IP;
+                celda1.appendChild(div1)
+                celda1.classList.add('transparentbox');
+                div2.classList.add('center-item');
+                div2.innerHTML = input[i].Descripcion;
+                celda2.appendChild(div2)
+                celda2.classList.add('transparentbox');
+                div3.classList.add('center-item');
+                div3.innerHTML = '-';
+                celda3.appendChild(div3)
+                celda3.classList.add('pingbox');
+
+                const pingme = document.createElement('button');
+                pingme.onclick = function () { pingFunction(input[i].IP, i) };
+                pingme.id = i;
+                pingme.innerHTML = 'Check';
+                pingme.classList.add('btn-grad');
+                div4.classList.add('center-item');
+                div4.appendChild(pingme)
+                celda4.appendChild(div4)
+                celda4.classList.add('transparentbox');
+            }
+            pingAll();
+        }
+
+        function setProperty(data) {
+            // console.log('onPropertyChanged ' + data.key);  // uncomment this line to check whether data is incoming in the browser console from WinCC Unified
+            switch (data.key) {
+                case 'timeout':
+                    REQUEST_TIMEOUT = data.value;
+                    break;
+                case 'ping high':
+                    PING_HIGH = data.value;
+                    break;
+                case 'devices':
+                    addDevices(data.value);
+                    break;
+            }
+        }
+
+        PING_HIGH = 100;
+        REQUEST_TIMEOUT = 1500;
+        let dispo = [
+            { IP: '172.16.0.12', Descripcion: 'PLC!!' },
+            { IP: '192.168.200.1', Descripcion: 'Router' },
+            { IP: '192.168.200.113', Descripcion: 'PC1' },
+            { IP: '192.168.200.190', Descripcion: 'Antena' },
+            { IP: '127.0.0.1', Descripcion: 'Localhost' }
+        ]
+        createTable();
+        addDevices(dispo);
+
+
+
+        WebCC.start(
+            function (result) {
+                if (result) {
+                    console.log("connected successfully");
+                    createTable();
+                    setProperty({ key: 'timeout', value: WebCC.Properties.Timeout });
+                    setProperty({ key: 'ping high', value: WebCC.Properties.Ping_High });
+                    setProperty({ key: 'devices', value: WebCC.Properties.Devices });
+                }
+                else {
+                    console.log("connection failed");
+                }
+            },
+            {
+                methods: {
+                },
+                //Events
+                events: {
+                },
+                //Properties
+                //////////
+                properties: {
+                    "Timeout": {
+                        "type": "number",
+                        "default": 2000
+                    },
+                    "Ping_High": {
+                        "type": "number",
+                        "default": 5
+                    },
+                    "Devices": [
+                        { IP: '192.168.200.1', Descripcion: 'Router' },
+                        { IP: '192.168.200.113', Descripcion: 'PC1' },
+                        { IP: '192.168.200.190', Descripcion: 'Antena' },
+                        { IP: '127.0.0.1', Descripcion: 'Localhost' }
+                    ]
+                }
+            },
+            // extensions
+            [],
+            // timeout
+            10000
+        );
+
+    </script>
+</body>
+
+
+</html>

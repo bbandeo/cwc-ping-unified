@@ -1,0 +1,57 @@
+{
+  "mver": "1.2.0",
+  "control": {
+    "identity": {
+      "name": "PingME",
+      "version": "1.0",
+      "displayname": "PingME",
+      "icon": "./assets/c.ico",
+      "type": "guid://71E4E57F-F91E-4C15-88B0-AE2642023BCA",
+      "start": "./control/index.html"
+    },
+    "metadata": {
+      "author": "BrunoBandeo",
+      "keywords": []
+    },
+    "contracts": {
+      "api": {
+        "methods": {},
+        "events": {},
+        "properties": {
+          "Timeout": {
+            "type": "number",
+            "default": 4000
+          },
+          "Ping_High": {
+            "type": "number",
+            "default": 250
+          },
+          "Devices": {
+            "$ref": "#/control/types/Devices"
+          }
+        }
+      }
+    },
+    "types": {
+      "Devices": {
+        "type": "array",
+        "items": {
+          "$ref": "#/control/types/Device"
+        }
+      },
+      "Device": {
+        "type": "object",
+        "properties": {
+          "IP": {
+            "type": "string",
+            "default": "192.168.200.1"
+          },
+          "Descripcion": {
+            "type": "string",
+            "default": "PC Oficina"
+          }
+        }
+      }
+    }
+  }
+}

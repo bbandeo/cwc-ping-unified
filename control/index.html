@@ -55,46 +55,58 @@
         }
 
         function pingAll() {
-            const table = document.getElementById('tabla-cuerpo');
-            for (let u = 0; u < TOTAL_DEVICES; u++) {
-                let delta_time = 0;
-                let fila = table.childNodes[u];
-                let ip = fila.childNodes[0].childNodes[0].innerHTML;
-                let value = fila.childNodes[2].childNodes[0].innerHTML;
-                let FQDN = ip;
-                let i = 0;
-                let time_cumul = 0;
-                url = "http://" + FQDN;
-                let ping = new XMLHttpRequest();
-                ping.date1 = Date.now();
-                ping.timeout = REQUEST_TIMEOUT;
-                let pingbox = document.getElementById('tabla-cuerpo').childNodes[u].childNodes[2];
-                ping.onreadystatechange = () => {
-                    if (ping.readyState == 4) {
-                        pingbox.classList.remove("ping-red");
-                        delta_time = Date.now() - ping.date1;
-                        if (delta_time > PING_HIGH) {
-                            pingbox.childNodes[0].innerHTML = "✔<br>" + delta_time + " ms";
-                            pingbox.classList.remove("ping-green");
-                            pingbox.classList.add('ping-yellow');
-                        } else {
-                            pingbox.childNodes[0].innerHTML = "✔<br>" + delta_time + " ms";
-                            pingbox.classList.remove("ping-yellow");
-                            pingbox.classList.add('ping-green');
+
+            if (navigator.onLine) {
+
+                console.log("NAVIGATOR ONLINE");
+
+                const table = document.getElementById('tabla-cuerpo');
+                for (let u = 0; u < TOTAL_DEVICES; u++) {
+                    let delta_time = 0;
+                    let fila = table.childNodes[u];
+                    let ip = fila.childNodes[0].childNodes[0].innerHTML;
+                    let value = fila.childNodes[2].childNodes[0].innerHTML;
+                    let FQDN = ip;
+                    let i = 0;
+                    let time_cumul = 0;
+                    url = "http://" + FQDN;
+                    let ping = new XMLHttpRequest();
+                    ping.date1 = Date.now();
+                    ping.timeout = REQUEST_TIMEOUT;
+                    let pingbox = document.getElementById('tabla-cuerpo').childNodes[u].childNodes[2];
+                    ping.onreadystatechange = () => {
+                        if (ping.readyState == 4) {
+                            pingbox.classList.remove("ping-red");
+                            delta_time = Date.now() - ping.date1;
+                            if (delta_time > PING_HIGH) {
+                                pingbox.childNodes[0].innerHTML = "✔<br>" + delta_time + " ms";
+                                pingbox.classList.remove("ping-green");
+                                pingbox.classList.add('ping-yellow');
+                            } else {
+                                pingbox.childNodes[0].innerHTML = "✔<br>" + delta_time + " ms";
+                                pingbox.classList.remove("ping-yellow");
+                                pingbox.classList.add('ping-green');
+                            }
                         }
                     }
+                    ping.ontimeout = () => {
+                        pingbox.childNodes[0].innerHTML = "✖<br>Inaccesible";
+                        pingbox.classList.add('ping-red')
+                    }
+                    ping.open("GET", url, true)
+                    ping.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    ping.setRequestHeader('X-PINGOTHER', 'pingpong');
+                    ping.send();
                 }
-                ping.ontimeout = () => {
-                    pingbox.childNodes[0].innerHTML = "✖<br>Inaccesible";
-                    pingbox.classList.add('ping-red')
+
+            } else {
+
+                for (let u = 0; u < TOTAL_DEVICES; u++) {
+                    let pingbox = document.getElementById('tabla-cuerpo').childNodes[u].childNodes[2];
+                    pingbox.childNodes[0].innerHTML = "✔<br>" + "NO CONNECTION";
                 }
-                ping.open("GET", url, true)
-                ping.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                ping.setRequestHeader('X-PINGOTHER', 'pingpong');
-                ping.send();
             }
         }
-
         function createTable() {
             const docContainer = document.getElementById('container')
             const docTable = document.createElement('table');
@@ -188,19 +200,25 @@
             }
         }
 
-        PING_HIGH = 100;
-        REQUEST_TIMEOUT = 1500;
-        let dispo = [
-            { IP: '172.16.0.12', Descripcion: 'PLC!!' },
-            { IP: '192.168.200.1', Descripcion: 'Router' },
-            { IP: '192.168.200.113', Descripcion: 'PC1' },
-            { IP: '192.168.200.190', Descripcion: 'Antena' },
-            { IP: '127.0.0.1', Descripcion: 'Localhost' }
-        ]
-        createTable();
-        addDevices(dispo);
-
-
+        ////////////// PRUEBA EN NAVEGADOR ////////////////////
+        ///
+        ///
+        ///
+        // PING_HIGH = 100;
+        // REQUEST_TIMEOUT = 1500;
+        // let dispo = [
+        //     { IP: '172.16.0.12', Descripcion: 'PLC' },
+        //     { IP: '192.168.200.1', Descripcion: 'Router' },
+        //     { IP: '192.168.200.113', Descripcion: 'PC1' },
+        //     { IP: '192.168.200.190', Descripcion: 'Antena' },
+        //     { IP: '127.0.0.1', Descripcion: 'Localhost' },
+        //     { IP: '192.168.100.157', Descripcion: 'MI PC' }
+        // ]
+        // createTable();
+        // addDevices(dispo);
+        ///
+        ///
+        /////////////////////////////////////////////////////////
 
         WebCC.start(
             function (result) {

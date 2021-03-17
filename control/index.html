@@ -21,7 +21,7 @@
             let FQDN = ip;
             let i = 0;
             let time_cumul = 0;
-            url = "http://" + FQDN;
+            url = "https://" + FQDN;
             let ping = new XMLHttpRequest();
             ping.date1 = Date.now();
             ping.timeout = REQUEST_TIMEOUT;
@@ -55,11 +55,7 @@
         }
 
         function pingAll() {
-
             if (navigator.onLine) {
-
-                console.log("NAVIGATOR ONLINE");
-
                 const table = document.getElementById('tabla-cuerpo');
                 for (let u = 0; u < TOTAL_DEVICES; u++) {
                     let delta_time = 0;
@@ -69,7 +65,7 @@
                     let FQDN = ip;
                     let i = 0;
                     let time_cumul = 0;
-                    url = "http://" + FQDN;
+                    url = "https://" + FQDN;
                     let ping = new XMLHttpRequest();
                     ping.date1 = Date.now();
                     ping.timeout = REQUEST_TIMEOUT;

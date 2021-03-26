@@ -21,12 +21,3 @@ Guardar el Custom Web Control en tu carpeta de proyecto:
 b. Hacerlo disponible para todos los proyectos.
 Guardar el Custom Web Control en la ruta de instalación del TIA Portal:
 C:\Program Files\Siemens\Automation\Portal Vxx\Data\Hmi\ CustomControls\{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.zip
-
-
-
-
-
-Integration into TIA Portal
-Before you can use the Custom Web Control in TIA Portal, you have two ways to install it (also refer to the official manual under "Installing a Custom Web Control"):
-1. Only make available for a specific project Place your Custom Web Control in your project folder: …Project_1\UserFiles\ CustomControls\{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}.zip
-2. Make available for all projects Place your Custom Web Control in the installation path of TIA Portal: 
